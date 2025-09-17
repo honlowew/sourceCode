@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Snowy! 🎉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        /* Front Page Styles */
+        .front-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .gift-box-front {
+            font-size: 8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            display: inline-block;
+            animation: gentleBounce 2s ease-in-out infinite;
+        }
+
+        .gift-box-front:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .front-instruction {
+            font-size: 1.5rem;
+            color: #495057;
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+        }
+
+        /* Pop-up Overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .popup-overlay.active {
+            display: flex;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .blast-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1002;
+        }
+
+        .blast-ring {
+            position: absolute;
+            border: 3px solid #b19cd9;
+            border-radius: 50%;
+            animation: blastExpand 0.8s ease-out forwards;
+        }
+
+        .blast-particles {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #b19cd9;
+            border-radius: 50%;
+            animation: particleExplode 1s ease-out forwards;
+        }
+
+        /* Pop-up Content */
+        .popup-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 600px;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 3px solid #b19cd9;
+            text-align: center;
+        }
+
+        /* Custom Scrollbar */
+        .popup-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .popup-content::-webkit-scrollbar-track {
+            background: rgba(177, 156, 217, 0.1);
+            border-radius: 10px;
+        }
+
+        .popup-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #b19cd9, #9c88c4);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        .popup-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #9c88c4, #8a75b8);
+            background-clip: content-box;
+        }
+
+        /* Firefox scrollbar */
+        .popup-content {
+            scrollbar-width: thin;
+            scrollbar-color: #b19cd9 rgba(177, 156, 217, 0.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.2);
+            color: #000000;
+        }
+
+        .birthday-title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #000000, #b19cd9, #495057);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        .floating-balloons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .balloon {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0;
+            animation: balloonFloatUp 4s ease-out forwards;
+        }
+
+        .message-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid #b19cd9;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .birthday-quote {
+            font-size: 1.3rem;
+            color: #212529;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+
+        .quote-decoration {
+            font-size: 2.5rem;
+            color: #b19cd9;
+            opacity: 0.7;
+            position: absolute;
+        }
+
+        .quote-decoration.left {
+            top: -5px;
+            left: 10px;
+        }
+
+        .quote-decoration.right {
+            bottom: -15px;
+            right: 10px;
+            transform: rotate(180deg);
+        }
+
+        .download-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #b19cd9, #9c88c4);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1001;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+
+        .sparkles-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .sparkle {
+            position: absolute;
+            color: #b19cd9;
+            font-size: 20px;
+            animation: sparkleFloat 4s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        @keyframes balloonFloatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0.5);
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1);
+            }
+        }
+
+        @keyframes sparkleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-15px) rotate(180deg); opacity: 1; }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes blastExpand {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+            100% {
+                width: 300px;
+                height: 300px;
+                opacity: 0;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes particleExplode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gift-box-front {
+                font-size: 6rem;
+            }
+            
+            .birthday-title {
+                font-size: 2.2rem;
+            }
+            
+            .popup-content {
+                padding: 25px;
+                margin: 20px;
+            }
+            
+            .birthday-quote {
+                font-size: 1.1rem;
+            }
+            
+            .front-instruction {
+                font-size: 1.2rem;
+                padding: 0 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gift-box-front {
+                font-size: 5rem;
+            }
+            
+            .birthday-title {
+                font-size: 1.8rem;
+            }
+            
+            .popup-content {
+                padding: 20px;
+            }
+        }
+         .mystery-button {
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(45deg, #2c003e, #1a001f);
+            padding: 15px 30px;
+            border: 2px solid #5e00ff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #5e00ff;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mystery-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(94,0,255,0.3), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mystery-button:hover {
+            box-shadow: 0 0 20px #9b30ff, 0 0 40px #5e00ff;
+            background: linear-gradient(45deg, #3d0066, #2b0033);
+            transform: scale(1.05);
+        }
+
+        .mystery-button:hover::before {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Front Page -->
+    <div class="front-page" id="frontPage">
+        <div class="gift-box-front" onclick="openPopup()">🎁</div>
+        <p class="front-instruction">Click the gift to celebrate Snowy's birthday!</p>
+    </div>
+
+    <!-- Pop-up Overlay -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="blast-effect" id="blastEffect"></div>
+        <div class="popup-content">
+            <div class="sparkles-bg" id="sparklesBg"></div>
+            <div class="floating-balloons" id="floatingBalloons"></div>
+            
+            <button class="close-btn" onclick="closePopup()">×</button>
+            
+            <h1 class="birthday-title">Happy Birthday, Snowy!</h1>
+            
+            <div class="message-area">
+                <div class="quote-decoration left">"</div>
+                <div class="quote-decoration right">"</div>
+                <p class="birthday-quote">
+                    Keep shining bright, Snowy! Believe in yourself and grow stronger every day—you've got everything it takes to reach the stars! ⭐
+                </p>
+            </div>
+            
+            <button class="download-btn" onclick="downloadCard()">
+                💾 Download Birthday Card
+            </button>
+
+
+            <div style="margin-top: 30px; color: #495057; font-style: italic;">
+                Made with 💖 for the most wonderful friend!
+            </div>
+            <br><br><br><br><br>
+            <a href="./caleb.html" target="_blank" class="mystery-button">
+                🔮 Explore the Mystery
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function openPopup() {
+            const popup = document.getElementById('popupOverlay');
+            popup.classList.add('active');
+            
+            // Create blast effect
+            createBlastEffect();
+            
+            // Create sparkles
+            setTimeout(() => {
+                createSparkles();
+            }, 200);
+            
+            // Create floating balloons
+            setTimeout(() => {
+                createFloatingBalloons();
+            }, 400);
+            
+            // Create confetti
+            setTimeout(() => {
+                createConfetti();
+            }, 800);
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popupOverlay');
+            popup.classList.remove('active');
+            
+            // Clear balloons, sparkles, and blast effect
+            document.getElementById('floatingBalloons').innerHTML = '';
+            document.getElementById('sparklesBg').innerHTML = '';
+            document.getElementById('blastEffect').innerHTML = '';
+        }
+
+        function createBlastEffect() {
+            const blastContainer = document.getElementById('blastEffect');
+            blastContainer.innerHTML = ''; // Clear existing blast effects
+            
+            // Create expanding rings
+            for (let i = 0; i < 3; i++) {
+                const ring = document.createElement('div');
+                ring.className = 'blast-ring';
+                ring.style.animationDelay = (i * 0.1) + 's';
+                blastContainer.appendChild(ring);
+            }
+            
+            // Create exploding particles
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'blast-particles';
+                
+                const angle = (i * 30) * Math.PI / 180;
+                const distance = 100 + Math.random() * 50;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--dx', dx + 'px');
+                particle.style.setProperty('--dy', dy + 'px');
+                particle.style.animationDelay = (Math.random() * 0.2) + 's';
+                
+                blastContainer.appendChild(particle);
+            }
+            
+            // Remove blast effect after animation
+            setTimeout(() => {
+                blastContainer.innerHTML = '';
+            }, 1200);
+        }
+
+        function createSparkles() {
+            const sparklesBg = document.getElementById('sparklesBg');
+            const sparkleSymbols = ['✨', '⭐', '💫', '🌟'];
+            
+            sparklesBg.innerHTML = ''; // Clear existing sparkles
+            
+            for (let i = 0; i < 12; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.textContent = sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)];
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 4 + 's';
+                sparklesBg.appendChild(sparkle);
+            }
+        }
+
+        function createFloatingBalloons() {
+            const balloonsContainer = document.getElementById('floatingBalloons');
+            const balloonEmojis = ['🎈', '🎈', '🎈', '🎈', '🎈', '🎈', '🎈', '🎈'];
+            const balloonColors = ['🔴', '🔵', '🟡', '🟢', '🟣', '🟠', '🔴', '🔵'];
+            
+            balloonsContainer.innerHTML = ''; // Clear existing balloons
+            
+            for (let i = 0; i < 8; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.textContent = balloonEmojis[i];
+                balloon.style.left = Math.random() * 90 + '%';
+                balloon.style.animationDelay = (i * 0.3) + 's';
+                balloonsContainer.appendChild(balloon);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#000000', '#495057', '#6c757d', '#b19cd9', '#9c88c4', '#ffffff'];
+            const container = document.getElementById('confettiContainer');
+            
+            for (let i = 0; i < 80; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animation = 'confettiFall linear infinite';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                
+                container.appendChild(confetti);
+                
+                setTimeout(() => {
+                    if (container.contains(confetti)) {
+                        container.removeChild(confetti);
+                    }
+                }, 5000);
+            }
+        }
+
+        function downloadCard() {
+            // Create a beautiful birthday card image using canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1200;
+            canvas.height = 800;
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.5, '#f8f9fa');
+            gradient.addColorStop(1, '#e9ecef');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add decorative border
+            ctx.strokeStyle = '#b19cd9';
+            ctx.lineWidth = 8;
+            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+            
+            // Title
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 64px Georgia';
+            ctx.textAlign = 'center';
+            ctx.fillText('Happy Birthday, Snowy!', canvas.width/2, 150);
+            
+            // Decorative line
+            ctx.strokeStyle = '#b19cd9';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2 - 200, 180);
+            ctx.lineTo(canvas.width/2 + 200, 180);
+            ctx.stroke();
+            
+            // Main message
+            ctx.fillStyle = '#212529';
+            ctx.font = '32px Georgia';
+            const lines = [
+                'Keep shining bright, Snowy!',
+                'Believe in yourself and grow stronger every day—',
+                'you\'ve got everything it takes to reach the stars!'
+            ];
+            
+            let yPos = 300;
+            lines.forEach(line => {
+                ctx.fillText(line, canvas.width/2, yPos);
+                yPos += 50;
+            });
+            
+            // Decorative elements
+            ctx.font = '80px Arial';
+            ctx.fillText('🎉', 150, 200);
+            ctx.fillText('🎂', canvas.width - 150, 200);
+            ctx.fillText('🎈', 100, 500);
+            ctx.fillText('🎈', 200, 450);
+            ctx.fillText('🎈', canvas.width - 200, 450);
+            ctx.fillText('🎈', canvas.width - 100, 500);
+            ctx.fillText('⭐', canvas.width/2, 550);
+            ctx.fillText('💖', canvas.width/2, 650);
+            
+            // Footer message
+            ctx.fillStyle = '#495057';
+            ctx.font = 'italic 28px Georgia';
+            ctx.fillText('Made with love for the most wonderful friend!', canvas.width/2, 720);
+            
+            // Convert to blob and download
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'Happy-Birthday-Snowy-Card.png';
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 'image/png', 1.0);
+        }
+        
+        // Close popup when clicking outside
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
+    </script>
+        
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9804fba4729394c2',t:'MTc1ODA3NDE0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+        
+
+</body>
+</html>
